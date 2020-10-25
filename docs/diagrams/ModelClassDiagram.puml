@@ -1,0 +1,71 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model <<Rectangle>>{
+Interface ReadOnlyAddressBook <<Interface>>
+Interface Model <<Interface>>
+Interface ObservableList <<Interface>>
+Class MyFitnessBuddy
+Class ReadOnlyMyFitnessBuddy
+Class Model
+Class ModelManager
+Class UserPrefs
+Class ReadOnlyUserPrefs
+
+Package Day {
+Class Day
+Class Weight
+Class Date
+Class UniqueDayList
+}
+
+Package Calorie {
+Class Calorie
+Class Input
+Class Output
+Class CalorieManager
+Class CalorieCount
+Class Time
+Class Exercise
+Class Food
+}
+
+CalorieManager "*"-> Input
+CalorieManager "*"-> Output
+Calorie *--> Time
+Calorie *--> CalorieCount
+Calorie <|-- Input
+Calorie <|-- Output
+
+Input *--> Food
+Output *--> Exercise
+
+Package Tag {
+Class Tag
+}
+}
+
+Class HiddenOutside #FFFFFF
+HiddenOutside ..> Model
+
+MyFitnessBuddy .up.|> ReadOnlyMyFitnessBuddy
+
+ModelManager .up.|> Model
+Model .right.> ObservableList
+ModelManager o--> "1" MyFitnessBuddy
+ModelManager o-left-> "1" UserPrefs
+UserPrefs .up.|> ReadOnlyUserPrefs
+
+MyFitnessBuddy *--> "1" UniqueDayList
+UniqueDayList o--> "*" Day
+Day *--> CalorieManager
+Day *--> "*" Tag
+Day *--> Date
+Day *--> Weight
+
+
+ModelManager -->"1" Day : filtered list
+@enduml
